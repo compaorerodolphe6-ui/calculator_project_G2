@@ -81,12 +81,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           displayValue = "-($displayValue)";
         }
       } else {
-        // Concaténation des chiffres et opérateurs
-        if (displayValue == "0") {
-          displayValue = text; // Remplace le 0 initial par le premier chiffre
-        } else {
-          displayValue += text;
-        }
+        // Logique de limitation à 12 caractères
+        // On ne bloque l'ajout que si c'est un chiffre ou un opérateur classique
+
+          if (displayValue == "0") {
+            displayValue = text; // Remplace le 0 initial
+          } else {
+            displayValue += text;
+          }
+
       }
     });
   }
@@ -130,8 +133,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         onButtonPressed(text);
       },
       child: Container(
-        width: 80,
-        height: j==1 ? 80: 180, // j=1 : bouton rond, sinon bouton vertical long
+        width: 90,
+        height: j==1 ? 90: 200, // j=1 : bouton rond, sinon bouton vertical long
         decoration: BoxDecoration(
           color: buttonColor,
           shape: j == 1 ? BoxShape.circle : BoxShape.rectangle,
@@ -162,21 +165,28 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             flex: 1,
             child: Container(
               padding: const EdgeInsets.all(24),
-              alignment: Alignment.bottomRight, // Chiffres alignés en bas à droite
+              alignment: Alignment.bottomRight,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  // Historique de l'opération (petite ligne)
                   Text(
                     operationDisplay,
-                    style: const TextStyle(color: Colors.white, fontSize: 24),
+                    style: const TextStyle(color: Colors.white70, fontSize: 24),
                   ),
-                  Text(
-                    displayValue,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 60,
-                        fontWeight: FontWeight.bold
+                  // Ligne principale défilante pour l'expression
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, // Défilement horizontal
+                    reverse: true, // Pour rester focalisé sur les derniers chiffres tapés
+                    child: Text(
+                      displayValue,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 60,
+                          fontWeight: FontWeight.bold
+                      ),
+                      maxLines: 1, // Garde le texte sur une seule ligne
                     ),
                   ),
                 ],
